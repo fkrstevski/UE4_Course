@@ -63,10 +63,11 @@ void UGrabber::Grab()
 	UPrimitiveComponent* ComponentToGrab = hit.GetComponent();
 	if (ComponentToGrab)
 	{
-		PhysicsHandle->GrabComponentAtLocation(
+		PhysicsHandle->GrabComponent(
 			ComponentToGrab,
 			NAME_None,
-			ComponentToGrab->GetOwner()->GetActorLocation() 
+			ComponentToGrab->GetOwner()->GetActorLocation(),
+			true
 		);
 	}
 }
