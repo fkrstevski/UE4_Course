@@ -19,7 +19,7 @@ UGrabber::UGrabber()
 void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("Grabbr reporting for duty!!!"));
+	UE_LOG(LogTemp, Warning, TEXT("Grabbr reporting for duty!!!!"));
 
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 
@@ -29,10 +29,27 @@ void UGrabber::BeginPlay()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("Missing PhysicsHandleComponent on  %s"), *(GetOwner()->GetName()));
+		UE_LOG(LogTemp, Error, TEXT("Missing PhysicsHandleComponent on %s"), *(GetOwner()->GetName()));
+	}
+
+	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+
+	if (InputComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Found InputComponent for %s"), *(GetOwner()->GetName()));
+		/// Bind the input axis
+		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Missing InputComponent on %s"), *(GetOwner()->GetName()));
 	}
 }
 
+void UGrabber::Grab()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Grab pressed!"));
+}
 
 // Called every frame
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
