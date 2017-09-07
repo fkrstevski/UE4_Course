@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 #include "HeroCharacter.generated.h"
 
 UCLASS()
@@ -13,7 +15,15 @@ class SIDESCROLLER3D_API AHeroCharacter : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	AHeroCharacter();
+	AHeroCharacter(const FObjectInitializer& ObjectInitializer);
+
+	/** Spring arm to fix the camera to the Character to match the side-scroller style */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	USpringArmComponent* SpringArm;
+
+	/** Game camera, is attached to the arm’s socket to achieve the side-scroller’s camera style */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	UCameraComponent* SideViewCamera;
 
 protected:
 	// Called when the game starts or when spawned
