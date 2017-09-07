@@ -81,30 +81,11 @@ void AHeroCharacter::Tick(float DeltaTime)
 void AHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	//Informs the engine that when the MoveForward entry is detected call AHeroCharacter::MoveForward method
-	InputComponent->BindAxis("MoveForward", this, &AHeroCharacter::MoveForward);
 
 	// Informs the engine that when the MoveRight entry is detected call AHeroCharacter:: MoveRight method
 	InputComponent->BindAxis("MoveRight", this, &AHeroCharacter::MoveRight);
-}
 
-/**
-*   It gets called when the MoveForward entry is detected (When the keys W or S are pressed)
-*  Calculates the direction of the character and applies it a movement (positive or negative) in that direction.
-*
-*  @param Value is equal to 1 when W is pressed and -1 when S is.
-*/
-void AHeroCharacter::MoveForward(float Value)
-{
-	if ((Controller != NULL) && (Value != 0.0f))
-	{
-		//Gets the current rotation
-		const FRotator Rotation = Controller->GetControlRotation();
-
-		// Creates the direction vector and applies the movement
-		const FVector Direction = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, Value);
-	}
+	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 }
 
 /**
@@ -115,13 +96,8 @@ void AHeroCharacter::MoveRight(float Value)
 {
 	if ((Controller != NULL) && (Value != 0.0f))
 	{
-		//Determines the direction of the side movements. Notice that we only have interest in the rotation in the Y axis.
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-		// Creates the direction vector and applies the movement
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		AddMovementInput(Direction, Value);
+		// Adds a new movement to the right or left according to the Value value.
+		AddMovementInput(FVector(-1.f, 0.f, 0.f), Value);
 	}
 }
 
