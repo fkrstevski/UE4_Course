@@ -38,6 +38,12 @@ public:
 	* In this case when the user press the A or D keys
 	*/
 	void MoveRight(float Value);
+	/**
+	* Gets call when the engine detects the Run entry
+	* Change to the character run state.
+	*/
+	void ToggleRunState();
+
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

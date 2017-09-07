@@ -86,6 +86,13 @@ void AHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	InputComponent->BindAxis("MoveRight", this, &AHeroCharacter::MoveRight);
 
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+
+	//The Run entry is detected, when the Shift key is pressed we set that the ToggleRunState method should be call.
+	InputComponent->BindAction("Run", IE_Pressed, this, &AHeroCharacter::ToggleRunState);
+
+	//The Run entry is detected, when the Shift key is released we set that the ToggleRunState method should be call.
+	InputComponent->BindAction("Run", IE_Released, this, &AHeroCharacter::ToggleRunState);
+
 }
 
 /**
@@ -101,3 +108,16 @@ void AHeroCharacter::MoveRight(float Value)
 	}
 }
 
+/**
+* Gets call when the engine detects the Run entry
+* Change to the character run state.
+*/
+void AHeroCharacter::ToggleRunState()
+{
+	//If the CharacterMovement's MaxWalkSpeed attribute is 400.f we increase it to 900.f to achieve that the character will  move faster.
+	//Otherwise we set it to 400 again so the character move in the walk speed range.
+	if (GetCharacterMovement()->MaxWalkSpeed == 400.0f)
+		GetCharacterMovement()->MaxWalkSpeed = 900.0f;
+	else
+		GetCharacterMovement()->MaxWalkSpeed = 400.0f;
+}
