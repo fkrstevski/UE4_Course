@@ -15,11 +15,11 @@ void AUE4LabPlayerController::BeginPlay()
 	for (TActorIterator<ACameraActor> It(GetWorld()); It; ++It)
 	{
 		//We get the current actor in the loop. As we only have an ACameraActor in the level, the iterator will iterate only once.
-		ACameraActor* _mainCamera = *It;
-
-		//We configure the new point of view of the camera as our game view.
-		//SetViewTargetWithBlend can receive more parameters, but the method has default values and in this case we won’t need more specialization so we’ll leave like this.
-		this->SetViewTargetWithBlend(_mainCamera);
+		ACameraActor* MainCamera = *It;
+		if (MainCamera->GetName().Compare("MyCameraActor") == 0)
+		{
+			this->SetViewTargetWithBlend(MainCamera);
+		}
 	}
 }
 

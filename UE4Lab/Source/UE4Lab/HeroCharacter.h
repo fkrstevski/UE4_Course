@@ -16,6 +16,14 @@ public:
 	AHeroCharacter();
 
 protected:
+	// Is called when the engine detects the configured entry to 'MoveForward'.
+	// In this case when the user press the W or S keys
+	void MoveForward(float Value);
+
+	// Is called when the engine detects the configured entry to 'MoveRight'.
+	// In this case when the user press the A or D keys
+	void MoveRight(float Value);
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
