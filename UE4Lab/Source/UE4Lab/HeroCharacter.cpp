@@ -72,19 +72,18 @@ void AHeroCharacter::MoveForward(float Value)
 }
 
 /**
-*   It gets called when the MoveForward entry is detected (When the keys W or S are pressed)
+*   It gets called when the MoveRight entry is detected (When the keys A or D are pressed)
 *  @param Value is equal to 1 when D is detected and to -1 when A is detected.
 */
 void AHeroCharacter::MoveRight(float Value)
 {
 	if ((Controller != NULL) && (Value != 0.0f))
 	{
-		//Determines the direction of the side movements. Notice that we only have interest in the rotation in the Y axis.
+		//Determines the direction of the side movements.
 		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 		// Creates the direction vector and applies the movement
-		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		const FVector Direction = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(Direction, Value);
 	}
 }
