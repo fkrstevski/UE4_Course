@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 #include "HeroCharacter.generated.h"
 
 UCLASS()
@@ -13,13 +15,17 @@ class UE4LAB_API AHeroCharacter : public ACharacter
 
 public:
 	// Sets default values for this character's properties
-	AHeroCharacter();
+	AHeroCharacter(const FObjectInitializer& ObjectInitializer);
+
+	/** Spring arm to fix the camera to the Character to match the side-scroller style */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	USpringArmComponent* SpringArm;
+
+	/** Game camera, is attached to the arm’s socket to achieve the side-scroller’s camera style */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	UCameraComponent* SideViewCamera;
 
 protected:
-	// Is called when the engine detects the configured entry to 'MoveForward'.
-	// In this case when the user press the W or S keys
-	void MoveForward(float Value);
-
 	// Is called when the engine detects the configured entry to 'MoveRight'.
 	// In this case when the user press the A or D keys
 	void MoveRight(float Value);

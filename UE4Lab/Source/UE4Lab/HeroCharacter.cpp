@@ -4,7 +4,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
-AHeroCharacter::AHeroCharacter()
+AHeroCharacter::AHeroCharacter(const FObjectInitializer& ObjectInitializer)
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -23,6 +23,40 @@ AHeroCharacter::AHeroCharacter()
 
 	//We decrease the MaxWalkSpeed default value so the character walks slowly.
 	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
+
+	//Initializing the USpringArmComponent attribute
+	SpringArm = ObjectInitializer.CreateDefaultSubobject<USpringArmComponent>(this, TEXT("CameraBoom"));
+
+	//Adding the springArm to the Character's RootComponent (the collision capsule)
+	SpringArm->AttachTo(RootComponent);
+
+	//bAbsoluteRotation allows us to define if this support will rotate with the player or will stay fixed.
+	//In our case we don't want it to rotate with the character.
+	SpringArm->bAbsoluteRotation = true;
+
+	//The distance between the arm and its target. This value defines the distance between the character and the camera.
+	//Try out different values to see the outcome.
+	SpringArm->TargetArmLength = 500.f;
+
+	//Socket Offset.
+	//Socket is an anchor point to other components.
+	//For instance, in the character case we can define the socket in the character's hand
+	//this way we can add another component(for example a gun).
+	//But in our case we will add a camera to our SpringArm
+	SpringArm->SocketOffset = FVector(0.f, 0.f, 75.f);
+
+	//The relative rotation of the arm regard to its parent.
+	//We want the camera rotated 90 degrees in the Z axis in order to be situated parallel to the character, at the same level.
+	//This way we achieve the classic side-scroller camera's style.
+	SpringArm->RelativeRotation = FRotator(0.f, 0.f, 90.f);
+
+	// Creating the UCameraComponent instance.
+	SideViewCamera = ObjectInitializer.CreateDefaultSubobject<UCameraComponent>(this, TEXT("SideViewCamera"));
+
+	//The AttachTo method allow us to add an object to another in a given socket. It receives two parameters,
+	//the first one, the object where we will be anchored (the springArm) and the second the socket's name where we will be anchored.
+	//USpringArmComponent's SocketName returns the name of the components socket.
+	SideViewCamera->AttachTo(SpringArm, USpringArmComponent::SocketName);
 
 }
 
@@ -45,30 +79,10 @@ void AHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	//Informs the engine that when the MoveForward entry is detected call AHeroCharacter::MoveForward method
-	InputComponent->BindAxis("MoveForward", this, &AHeroCharacter::MoveForward);
-
 	// Informs the engine that when the MoveRight entry is detected call AHeroCharacter:: MoveRight method
 	InputComponent->BindAxis("MoveRight", this, &AHeroCharacter::MoveRight);
-}
 
-/**
-*  It gets called when the MoveForward entry is detected (When the keys W or S are pressed)
-*  Calculates the direction of the character and applies it a movement (positive or negative) in that direction.
-*
-*  @param Value is equal to 1 when W is pressed and -1 when S is.
-*/
-void AHeroCharacter::MoveForward(float Value)
-{
-	if ((Controller != NULL) && (Value != 0.0f))
-	{
-		//Gets the current rotation
-		const FRotator Rotation = Controller->GetControlRotation();
-
-		// Creates the direction vector and applies the movement
-		const FVector Direction = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, Value);
-	}
+	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 }
 
 /**
@@ -79,12 +93,8 @@ void AHeroCharacter::MoveRight(float Value)
 {
 	if ((Controller != NULL) && (Value != 0.0f))
 	{
-		//Determines the direction of the side movements.
-		const FRotator Rotation = Controller->GetControlRotation();
-
-		// Creates the direction vector and applies the movement
-		const FVector Direction = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Y);
-		AddMovementInput(Direction, Value);
+		// Adds a new movement to the right or left according to the Value value.
+		AddMovementInput(FVector(-1.f, 0.f, 0.f), Value);
 	}
 }
 
