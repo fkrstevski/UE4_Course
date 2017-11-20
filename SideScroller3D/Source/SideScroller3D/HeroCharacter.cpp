@@ -5,10 +5,12 @@
 #include "Camera/CameraActor.h"
 #include "UObject/UObjectGlobals.h"
 
+#define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::White,text)
 
 // Sets default values
 AHeroCharacter::AHeroCharacter(const FObjectInitializer& ObjectInitializer)
 {
+	MyNumber = 0;
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -74,6 +76,21 @@ void AHeroCharacter::BeginPlay()
 void AHeroCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	static const FString ScrollingMessage(TEXT("Hello World: "));
+
+	if (GEngine)
+	{
+		const int32 AlwaysAddKey = -1; // Passing -1 means that we will not try and overwrite an   
+									   // existing message, just add a new one  
+		//GEngine->AddOnScreenDebugMessage(AlwaysAddKey, 0.5f, FColor::Yellow, ScrollingMessage + FString::FromInt(MyNumber));
+
+		const int32 MyNumberKey = 0; // Not passing -1 so each time through we will update the existing message instead  
+									 // of making a new one  
+		GEngine->AddOnScreenDebugMessage(MyNumberKey, 5.f, FColor::Yellow, FString::FromInt(MyNumber));
+
+		++MyNumber; // Increase MyNumber so we can see it change on screen  
+	}
 
 }
 

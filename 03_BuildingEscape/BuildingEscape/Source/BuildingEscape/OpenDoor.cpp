@@ -19,7 +19,7 @@ UOpenDoor::UOpenDoor()
 // Called when the game starts
 void UOpenDoor::BeginPlay()
 {
-	Super::BeginPlay();
+	Super::BeginPlay(); 
 	Owner = GetOwner();
 
 	if (!PressurePlate)

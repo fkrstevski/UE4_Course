@@ -43,6 +43,7 @@ public:
 	* Change to the character run state.
 	*/
 	void ToggleRunState();
+	int MyNumber;
 
 
 	// Called to bind functionality to input
