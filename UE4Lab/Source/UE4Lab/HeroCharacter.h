@@ -18,11 +18,11 @@ public:
 	AHeroCharacter(const FObjectInitializer& ObjectInitializer);
 
 	/** Spring arm to fix the camera to the Character to match the side-scroller style */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera)
 	USpringArmComponent* SpringArm;
 
 	/** Game camera, is attached to the arm’s socket to achieve the side-scroller’s camera style */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Camera)
 	UCameraComponent* SideViewCamera;
 
 protected:

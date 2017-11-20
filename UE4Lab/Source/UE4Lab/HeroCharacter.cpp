@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "HeroCharacter.h"
+#include "GameFramework/PlayerInput.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -51,7 +52,7 @@ AHeroCharacter::AHeroCharacter(const FObjectInitializer& ObjectInitializer)
 	SpringArm->RelativeRotation = FRotator(0.f, 0.f, 90.f);
 
 	// Creating the UCameraComponent instance.
-	SideViewCamera = ObjectInitializer.CreateDefaultSubobject<UCameraComponent>(this, TEXT("SideViewCamera"));
+	SideViewCamera = ObjectInitializer.CreateDefaultSubobject<UCameraComponent>(this, TEXT("SideViewCameraWW"));
 
 	//The AttachTo method allow us to add an object to another in a given socket. It receives two parameters,
 	//the first one, the object where we will be anchored (the springArm) and the second the socket's name where we will be anchored.
@@ -74,21 +75,23 @@ void AHeroCharacter::Tick(float DeltaTime)
 
 }
 
-// Called to bind functionality to input
 void AHeroCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	// Informs the engine that when the MoveRight entry is detected call AHeroCharacter:: MoveRight method
-	InputComponent->BindAxis("MoveRight", this, &AHeroCharacter::MoveRight);
+	FInputAxisKeyMapping MoveRight("MoveRight", EKeys::D, 1.f);
+	FInputAxisKeyMapping MoveLeft("MoveRight", EKeys::A, -1.f);
+	FInputActionKeyMapping Jump("Jump", EKeys::SpaceBar, 0, 0, 0, 0);
 
+	UPlayerInput* PlayerInput = GetWorld()->GetFirstPlayerController()->PlayerInput;
+	PlayerInput->AddAxisMapping(MoveRight);
+	PlayerInput->AddAxisMapping(MoveLeft);
+	PlayerInput->AddActionMapping(Jump);
+
+	InputComponent->BindAxis("MoveRight", this, &AHeroCharacter::MoveRight);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 }
 
-/**
-*   It gets called when the MoveRight entry is detected (When the keys A or D are pressed)
-*  @param Value is equal to 1 when D is detected and to -1 when A is detected.
-*/
 void AHeroCharacter::MoveRight(float Value)
 {
 	if ((Controller != NULL) && (Value != 0.0f))
@@ -97,4 +100,5 @@ void AHeroCharacter::MoveRight(float Value)
 		AddMovementInput(FVector(-1.f, 0.f, 0.f), Value);
 	}
 }
+
 
