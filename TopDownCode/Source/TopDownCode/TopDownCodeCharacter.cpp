@@ -10,8 +10,11 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Materials/Material.h"
+#include "TopDownCode.h"
+#include "TopDownCodePlayerController.h"
 
 ATopDownCodeCharacter::ATopDownCodeCharacter()
+	: m_health(0)
 {
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -86,4 +89,21 @@ void ATopDownCodeCharacter::Tick(float DeltaSeconds)
 			CursorToWorld->SetWorldRotation(CursorR);
 		}
 	}
+}
+
+void ATopDownCodeCharacter::AddHealth(float amount)
+{
+	m_health += amount;
+	UE_LOG(LogTopDownCode, Log, TEXT("New Health: %f"), m_health);
+
+	ATopDownCodePlayerController* pPlayerController = Cast<ATopDownCodePlayerController>(GetController());
+	if (pPlayerController)
+	{
+		pPlayerController->OnCollectPowerup("Health");
+	}
+	else
+	{
+		UE_LOG(LogTopDownCode, Error, TEXT("Attempting to add health to a non player"));
+	}
+
 }
